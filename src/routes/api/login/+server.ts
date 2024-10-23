@@ -24,7 +24,7 @@ export const POST: RequestHandler = async ({ request }) => {
       const headers = {
         "Set-Cookie": cookie.serialize("Session_id", cookieID, {
           httpOnly: false,
-          maxAge: 60 * 60 * 24 * 7,
+          maxAge: 60 * 60 * 24 * 30,
           secure: true,
           sameSite: "lax",
           path: "/",
