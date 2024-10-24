@@ -67,6 +67,7 @@
     },
   ];
   let systemPrompt = baseModelSystemPrompt;
+  let modelName: string = "gemini-1.5-flash";
 
   const showToast = (
     title: string,
@@ -182,6 +183,7 @@
       if (data) {
         if (data != "") {
           let newMessages = []; // Declare newMessages here
+          //@ts-ignore
           for (const row of data) {
             newMessages.push({ content: row.prompt, sender: "User" });
             newMessages.push({
@@ -320,7 +322,7 @@
       const genAI = new GoogleGenerativeAI(API_KEY); // generates a new ai to using the api key to get responses
       try {
         const model = genAI.getGenerativeModel({
-          model: "gemini-1.5-flash",
+          model: modelName,
         }); // generates a new model using genAI
         try {
           chatSession = model.startChat({
@@ -380,6 +382,7 @@
     //checks if member is true
     // if (membership == "tier-2") {
     systemPrompt = socraticModelSystemPrompt;
+    modelName = "gemini-1.5-pro";
     // } else {
     //   showToast(
     //     "Error",
@@ -393,6 +396,7 @@
     //checks if member is true
     // if (membership == "tier-1" || membership == "tier-2") {
     systemPrompt = baseModelSystemPrompt;
+    modelName = "gemini-1.5-flash";
     // } else {
     //   showToast(
     //     "Error",
