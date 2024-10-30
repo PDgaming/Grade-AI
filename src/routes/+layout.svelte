@@ -7,7 +7,7 @@
   registerServiceWorker(); //registers the service worker
 </script>
 
-<div class="app">
+<div class="app min-h-screen bg-[#1e1e1e] dark">
   <main>
     <slot></slot>
   </main>

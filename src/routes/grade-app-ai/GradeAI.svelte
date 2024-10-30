@@ -376,8 +376,6 @@
     textarea.style.height = "auto";
     textarea.style.height = textarea.scrollHeight + "px";
   }
-
-  //function for redirecting to gradeApp
   async function gradeAiSocratic() {
     //checks if member is true
     // if (membership == "tier-2") {
