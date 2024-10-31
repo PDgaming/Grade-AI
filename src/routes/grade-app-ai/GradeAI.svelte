@@ -35,13 +35,14 @@
   let resumeButton = false;
   let stopButton = false;
   let selectedModel: string;
+  let user: string = "User";
 
   const socraticModelSystemPrompt = [
     {
       role: "user",
       parts: [
         {
-          text: "You are a Socratic Teacher. And I am your student. And please try to keep your replies as brief as possible, while explaining each topic carefully. And Your Name is Grade-AI",
+          text: "You are a Socratic Teacher. And I am your student. And please try to keep your replies as brief as possible, while explaining each topic carefully. And Your Name is Grade-AI. Please Exlain the topic in relation to the NCERT CBSE 2024 curriculum.",
         },
       ],
     },
@@ -96,7 +97,7 @@
   };
   const ToastContainer = ToastContainerAny as any;
   const FlatToast = FlatToastAny as any;
-  onMount(() => {
+  onMount(async () => {
     //checks if user is logged in by is Display Name exists in sessionStorage
     if (sessionStorage.getItem("Display Name")) {
       //@ts-ignore
@@ -111,30 +112,25 @@
       userEmail = sessionStorage.getItem("Email"); //sets userEmail to the email from sessionstorage
     }
     //checks if name is null
-    if (name == null) {
+    if (name == null || !userEmail) {
       notLoggedIn = true; //sets notLoggedIn to true
-    }
-    if (!userEmail) {
-      notLoggedIn = true;
     } else {
+      if (name) {
+        user = name;
+      } else if (userEmail) {
+        user = userEmail;
+      }
+
       try {
         initializeEverything();
+        await getUserMessagesFromDb(userEmail);
+        const chatlog = document.getElementById("chatlog");
+        if (chatlog) {
+          chatlog.scrollTo(0, chatlog.scrollHeight);
+        }
       } catch (error) {
-        console.log(error);
+        console.log(`Error during initialization: ${error}`);
       }
-    }
-    try {
-      // @ts-ignore
-      getUserMessagesFromDb(userEmail).then(() => {
-        const chatLog = document.getElementById("chatlog");
-        setTimeout(() => {
-          if (chatLog) {
-            chatLog.scrollTo(0, chatLog.scrollHeight);
-          }
-        }, 1000);
-      });
-    } catch (error) {
-      console.log(error);
     }
   });
   function speak(text: string) {
@@ -170,7 +166,8 @@
       const fetchMessages = async () => {
         const { data, error } = await GradeAppDatabase.from("User-messages")
           .select()
-          .eq("user", userEmail);
+          .eq("user", userEmail)
+          .order("created_at", { ascending: true });
         if (error) throw error;
         return data;
       };
@@ -181,23 +178,25 @@
       const data = await race([fetchMessages(), timeout]);
 
       if (data) {
-        if (data != "") {
+        //@ts-ignore
+        if (data.length > 0) {
+          // Changed from data != ""
           let newMessages = []; // Declare newMessages here
           //@ts-ignore
           for (const row of data) {
-            newMessages.push({ content: row.prompt, sender: "User" });
+            newMessages.push({ content: row.prompt, sender: user });
             newMessages.push({
               content: row.response.replace(/\*\*/g, "<br>"),
-              sender: "Gemini",
+              sender: `Gemini-${selectedModel || "Base Model"}`,
             });
           }
-          messages = [...messages, ...newMessages]; // This triggers reactivity
+          messages = newMessages; // Replace instead of concatenating
           localStorage.setItem("messages", JSON.stringify(messages));
           shouldShowWelcomeMessage = false;
         }
       }
     } catch (error) {
-      console.log(error);
+      console.log(`Database fetch error: ${error}`);
       showToast(
         "Warning",
         "Fetching messages took too long. Using local messages.",
@@ -243,6 +242,7 @@
         user: email,
         prompt: prompt,
         response: response,
+        created_at: new Date().toISOString(),
       });
       if (error) {
         console.log(error);
@@ -263,12 +263,15 @@
     ) as HTMLInputElement; // gets user input
     const userInput = userInputElement.value.trim(); // gets user input
 
-    messages = [...messages, { content: userInput, sender: "User" }]; // add user input to messages
+    messages = [...messages, { content: userInput, sender: user }]; // add user input to messages
     if (userInput == "") {
       // checks if userInput is empty
       messages = [
         ...messages,
-        { content: "Sorry, you didn't enter a prompt!", sender: "Gemini" }, // returns error message
+        {
+          content: "Sorry, you didn't enter a prompt!",
+          sender: `Gemini-${selectedModel}`,
+        }, // returns error message
       ]; // add userinput to messages
     } else {
       // if userInput is not empty
@@ -278,7 +281,7 @@
           if (chatLog) {
             chatLog.scrollTo(0, chatLog.scrollHeight);
           }
-        }, 1000);
+        }, 500);
       });
     }
     userInputElement.value = ""; // removes old message from the input
@@ -355,11 +358,11 @@
         // Create a single message with line breaks
         const message = {
           content: formattedText,
-          sender: "Gemini",
+          sender: `Gemini-${selectedModel}`,
         }; // stores formatted AI text in message
 
         messages = [...messages, message]; // appends formatted text to messages
-        writeDataInDb(prompt, text);
+        await writeDataInDb(prompt, text);
         const chatLog = document.getElementById("chatlog");
         if (chatLog) {
           chatLog.scrollTo(0, chatLog.scrollHeight);
@@ -442,12 +445,12 @@
         </div>
       {/if}
       {#each messages as userMessage}
-        <div class={userMessage.sender}>
+        <div class={userMessage.sender === user ? "User" : "Gemini"}>
           <div class="senders">
             <h3 class="text-white pl-2">{userMessage.sender}:</h3>
           </div>
           <div class="content pl-5 text-gray-200">
-            {#if userMessage.sender === "Gemini"}
+            {#if userMessage.sender.startsWith("Gemini")}
               <div>
                 <HighlightedContent content={userMessage.content} />
               </div>
@@ -519,7 +522,7 @@
 <style>
   .User {
     width: 50em;
-    background-color: #1e1f20;
+    background-color: #3e3f41;
     border-radius: 10px;
     align-self: flex-end;
     padding-bottom: 10px;
