@@ -11,7 +11,7 @@
   }
 </script>
 
-<div class="navbar bg-base-200">
+<div class="navbar">
   <div class="navbar-start">
     <div class="dropdown">
       <div tabindex="0" role="button" class="btn btn-ghost lg:hidden">
@@ -49,7 +49,7 @@
         <li><a class="btn" href="/login">Login</a></li>
       </ul>
     </div>
-    <a href="/" class="btn btn-ghost text-3xl">Grade App</a>
+    <a href="/" class="btn text-3xl">Grade App</a>
   </div>
   <div class="navbar-center hidden lg:flex">
     <ul class="menu menu-horizontal text-xl">
@@ -76,7 +76,10 @@
     position: sticky;
     top: 0;
     z-index: 10;
-    background-color: var(--base-100);
-    backdrop-filter: blur(20px);
+    background-color: var(--base-200);
+    backdrop-filter: blur(30px);
+  }
+  li:hover {
+    transform: translateY(-0.25em);
   }
 </style>

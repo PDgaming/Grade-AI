@@ -17,6 +17,8 @@
 
     authDomain: "grade-app-16e2d.firebaseapp.com",
 
+    databaseURL: "https://grade-app-16e2d-default-rtdb.firebaseio.com",
+
     projectId: "grade-app-16e2d",
 
     storageBucket: "grade-app-16e2d.appspot.com",
@@ -25,8 +27,9 @@
 
     appId: "1:942886540823:web:29caeac2695fecc3d4ee52",
 
-    measurementId: "G-WD1M20G6LX",
+    measurementId: "G-XCTQN883KL",
   };
+
   let email: string;
   let password: string;
   // Initialize Firebase
@@ -37,6 +40,7 @@
   auth.useDeviceLanguage();
   //declares provider for google
   const provider = new GoogleAuthProvider();
+
   //function for showing toasts
   const showToast = (
     title: string,

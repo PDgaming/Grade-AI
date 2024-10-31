@@ -51,8 +51,8 @@
     <div class="hero min-h-screen">
       <div class="hero-content flex-col lg:flex-row-reverse">
         <div id="home">
-          <h1 id="main-headings" class="text-5xl font-bold">Grade App</h1>
-          <p class="py-6" id="homep">
+          <h1 id="main-headings" class="font-bold">Grade App</h1>
+          <p class="py-4" id="homep">
             Grade App is an AI powered educational chatting application that
             leverages the power of Google's Gemini to help students clear doubt
             and understand new concepts.
@@ -212,13 +212,14 @@
     background: #252527;
     border-radius: 8px;
     overflow: hidden;
-    box-shadow: 0px 0px 4px rgba(255, 255, 255, 0.2);
+    box-shadow: 0px 0px 10px rgba(255, 255, 255, 0.2);
     margin: 20px;
     text-align: center;
     padding: 15px;
   }
   .card:hover {
-    box-shadow: 0px 0px 4px rgba(255, 255, 255, 0.4);
+    cursor: pointer;
+    box-shadow: 0px 0px 10px rgba(255, 255, 255, 0.4);
   }
   .card-content h3 {
     font-size: 1.6em;
@@ -241,20 +242,24 @@
   }
   #sub-headings {
     font-size: 3.5em;
+    background: rgb(78, 130, 238);
     background: linear-gradient(
       90deg,
-      rgba(72, 148, 229) 35%,
-      rgba(138, 121, 203) 50%
+      rgba(78, 130, 238, 1) 30%,
+      rgba(165, 112, 188, 1) 50%,
+      rgba(207, 103, 127, 1) 70%
     );
     background-clip: text;
     -webkit-text-fill-color: transparent;
   }
   #main-headings {
-    font-size: 7em;
+    font-size: 6.5em;
+    background: rgb(78, 130, 238);
     background: linear-gradient(
       90deg,
-      rgba(72, 148, 229) 0%,
-      rgba(138, 121, 203) 70%
+      rgba(78, 130, 238, 1) 0%,
+      rgba(165, 112, 188, 1) 15%,
+      rgba(207, 103, 127, 1) 50%
     );
     background-clip: text;
     -webkit-text-fill-color: transparent;
