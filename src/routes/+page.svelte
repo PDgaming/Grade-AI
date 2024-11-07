@@ -59,9 +59,15 @@
           </p>
           <p>Designed by students for students.</p>
           <div class="buttons">
-            <a class="btn btn-primary loginButton" href="/login">Login</a>
-            <a class="btn btn-primary registerButton" href="/register"
-              >Register</a
+            <a
+              data-sveltekit-preload-data
+              class="btn btn-primary loginButton"
+              href="/login">Login</a
+            >
+            <a
+              data-sveltekit-preload-data
+              class="btn btn-primary registerButton"
+              href="/register">Register</a
             >
           </div>
         </div>

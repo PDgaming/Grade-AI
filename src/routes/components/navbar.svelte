@@ -46,7 +46,9 @@
         <li>
           <a href="#contact" on:click={smoothScroll}>Contact</a>
         </li>
-        <li><a class="btn" href="/login">Login</a></li>
+        <li>
+          <a data-sveltekit-preload-data class="btn" href="/login">Login</a>
+        </li>
       </ul>
     </div>
     <a href="/" class="btn text-3xl">Grade App</a>
@@ -66,7 +68,9 @@
       <li>
         <a href="#contact">Contact</a>
       </li>
-      <li><a href="/login" class="text-xl">Login</a></li>
+      <li>
+        <a data-sveltekit-preload-data href="/login" class="text-xl">Login</a>
+      </li>
     </ul>
   </div>
 </div>
