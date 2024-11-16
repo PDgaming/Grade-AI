@@ -264,6 +264,10 @@
     const userInput = userInputElement.value.trim(); // gets user input
 
     messages = [...messages, { content: userInput, sender: user }]; // add user input to messages
+    const chatLog = document.getElementById("chatlog");
+    if (chatLog) {
+      chatLog.scrollTo(0, chatLog.scrollHeight);
+    }
     if (userInput == "") {
       // checks if userInput is empty
       messages = [
