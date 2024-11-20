@@ -429,7 +429,7 @@
 </svelte:component>
 
 <svelte:head>
-  <title>Grade App - Grade AI</title>
+  <title>Grade AI</title>
 </svelte:head>
 
 {#if !notLoggedIn}

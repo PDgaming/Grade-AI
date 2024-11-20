@@ -53,7 +53,7 @@
 </script>
 
 <svelte:head>
-  <title>Grade App</title>
+  <title>Grade AI</title>
 </svelte:head>
 
 {#if $loggedIn}
