@@ -20,6 +20,17 @@
           sessionStorage.setItem("Email", data[0].Email);
           sessionStorage.setItem("Membership", data[0].Membership);
           loggedIn.set(true);
+          const response = await fetch("/api/login", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              email: data[0].Email,
+              type: "renewCookie",
+            }),
+          });
+          const result = await response.json();
         } else {
           console.log(error);
         }
