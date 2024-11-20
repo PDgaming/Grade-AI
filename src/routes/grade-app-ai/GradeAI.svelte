@@ -1,7 +1,6 @@
 <script lang="ts">
   import { onMount } from "svelte"; //imports onMount
   import NotLoggedIn from "../components/notLoggedIn.svelte"; //imports NotLoggedIn component
-  import "./index.css"; //imports index.css
   import {
     toasts,
     ToastContainer as ToastContainerAny,
@@ -42,7 +41,7 @@
       role: "user",
       parts: [
         {
-          text: "You are a Socratic Teacher. And I am your student. And please try to keep your replies as brief as possible, while explaining each topic carefully. And Your Name is Grade-AI. Please Exlain the topic in relation to the NCERT CBSE 2024 curriculum.",
+          text: "You are a Socratic Teacher. And I am your student. And please try to keep your replies as brief as possible, while explaining each topic carefully. And Your Name is Grade-AI. Please Exlain the topic in relation to the NCERT CBSE 2024 curriculum. Please don't give the answer directly but rather a starting point to get started, you job is to help the student find the answer on his/her own way.",
         },
       ],
     },
@@ -369,6 +368,14 @@
         }
       } catch (error) {
         console.log(`Error sending message: ${error}`);
+        messages = [
+          ...messages,
+          {
+            content: `Sorry, something went wrong! Error Message: ${error}`,
+            sender: `Gemini-${selectedModel}`,
+          },
+        ];
+        shouldload = false;
       }
     } else {
       initializeEverything();
@@ -427,15 +434,20 @@
 
 {#if !notLoggedIn}
   <div class="main">
-    <div class="model-selection">
-      <select
-        bind:value={selectedModel}
-        on:change={changeModel}
-        class="dropdown-content menu bg-base-500 z-[1] p-2 shadow"
-      >
-        <option>Base Model</option>
-        <option>Socratic Model</option>
-      </select>
+    <div class="nav">
+      <div class="model-selection">
+        <select
+          bind:value={selectedModel}
+          on:change={changeModel}
+          class="dropdown-content menu bg-base-500 z-[1] p-2 shadow"
+        >
+          <option>Base Model</option>
+          <option>Socratic Model</option>
+        </select>
+      </div>
+      <div class="title">
+        <h1>Grade-AI(Powered by Google's Gemini)</h1>
+      </div>
     </div>
     <div class="chatlog" id="chatlog">
       {#if shouldShowWelcomeMessage}
@@ -474,21 +486,36 @@
         on:input={autoResize}
         rows="1"
       ></textarea>
-      <button type="button" class="btn" on:click={sendMessage}>Send</button>
-      {#if speakButton}
-        <button type="button" class="btn" on:click={speakText}>
-          <svg
+      <div class="tooltip" data-tip="Send">
+        <button type="button" class="btn" on:click={sendMessage}
+          ><svg
             xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 640 512"
+            viewBox="0 0 448 512"
             width="30px"
-            ><!--!Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path
-              fill="grey"
-              d="M533.6 32.5C598.5 85.2 640 165.8 640 256s-41.5 170.7-106.4 223.5c-10.3 8.4-25.4 6.8-33.8-3.5s-6.8-25.4 3.5-33.8C557.5 398.2 592 331.2 592 256s-34.5-142.2-88.7-186.3c-10.3-8.4-11.8-23.5-3.5-33.8s23.5-11.8 33.8-3.5zM473.1 107c43.2 35.2 70.9 88.9 70.9 149s-27.7 113.8-70.9 149c-10.3 8.4-25.4 6.8-33.8-3.5s-6.8-25.4 3.5-33.8C475.3 341.3 496 301.1 496 256s-20.7-85.3-53.2-111.8c-10.3-8.4-11.8-23.5-3.5-33.8s23.5-11.8 33.8-3.5zm-60.5 74.5C434.1 199.1 448 225.9 448 256s-13.9 56.9-35.4 74.5c-10.3 8.4-25.4 6.8-33.8-3.5s-6.8-25.4 3.5-33.8C393.1 284.4 400 271 400 256s-6.9-28.4-17.7-37.3c-10.3-8.4-11.8-23.5-3.5-33.8s23.5-11.8 33.8-3.5zM301.1 34.8C312.6 40 320 51.4 320 64l0 384c0 12.6-7.4 24-18.9 29.2s-25 3.1-34.4-5.3L131.8 352 64 352c-35.3 0-64-28.7-64-64l0-64c0-35.3 28.7-64 64-64l67.8 0L266.7 40.1c9.4-8.4 22.9-10.4 34.4-5.3z"
+            fill="grey"
+            ><!--!Font Awesome Free 6.7.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path
+              d="M438.6 278.6c12.5-12.5 12.5-32.8 0-45.3l-160-160c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L338.8 224 32 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l306.7 0L233.4 393.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0l160-160z"
             /></svg
-          >
-        </button>
+          ></button
+        >
+      </div>
+      {#if speakButton}
+        <div class="tooltip" data-tip="Speak">
+          <button type="button" class="btn" on:click={speakText}>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 640 512"
+              width="30px"
+              ><!--!Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path
+                fill="grey"
+                d="M533.6 32.5C598.5 85.2 640 165.8 640 256s-41.5 170.7-106.4 223.5c-10.3 8.4-25.4 6.8-33.8-3.5s-6.8-25.4 3.5-33.8C557.5 398.2 592 331.2 592 256s-34.5-142.2-88.7-186.3c-10.3-8.4-11.8-23.5-3.5-33.8s23.5-11.8 33.8-3.5zM473.1 107c43.2 35.2 70.9 88.9 70.9 149s-27.7 113.8-70.9 149c-10.3 8.4-25.4 6.8-33.8-3.5s-6.8-25.4 3.5-33.8C475.3 341.3 496 301.1 496 256s-20.7-85.3-53.2-111.8c-10.3-8.4-11.8-23.5-3.5-33.8s23.5-11.8 33.8-3.5zm-60.5 74.5C434.1 199.1 448 225.9 448 256s-13.9 56.9-35.4 74.5c-10.3 8.4-25.4 6.8-33.8-3.5s-6.8-25.4 3.5-33.8C393.1 284.4 400 271 400 256s-6.9-28.4-17.7-37.3c-10.3-8.4-11.8-23.5-3.5-33.8s23.5-11.8 33.8-3.5zM301.1 34.8C312.6 40 320 51.4 320 64l0 384c0 12.6-7.4 24-18.9 29.2s-25 3.1-34.4-5.3L131.8 352 64 352c-35.3 0-64-28.7-64-64l0-64c0-35.3 28.7-64 64-64l67.8 0L266.7 40.1c9.4-8.4 22.9-10.4 34.4-5.3z"
+              /></svg
+            >
+          </button>
+        </div>
       {/if}
       {#if pauseButton}
+        <div class="tooltip" data-tip="Pause"></div>
         <button type="button" class="btn" on:click={pauseSpeech}
           ><svg
             xmlns="http://www.w3.org/2000/svg"
@@ -502,17 +529,19 @@
         >
       {/if}
       {#if resumeButton}
-        <button type="button" class="btn" on:click={resumeSpeech}
-          ><svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 384 512"
-            width="30px"
-            ><!--!Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path
-              fill="grey"
-              d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80L0 432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"
-            /></svg
-          ></button
-        >
+        <div class="tooltip" data-tip="Resume">
+          <button type="button" class="btn" on:click={resumeSpeech}
+            ><svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 384 512"
+              width="30px"
+              ><!--!Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path
+                fill="grey"
+                d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80L0 432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"
+              /></svg
+            ></button
+          >
+        </div>
       {/if}
     </div>
   </div>
@@ -520,6 +549,12 @@
 {#if notLoggedIn}<NotLoggedIn />{/if}
 
 <style>
+  :root {
+    --border-color: rgb(168, 168, 168);
+  }
+  .main {
+    overflow: hidden;
+  }
   .User {
     width: 50em;
     background-color: #3e3f41;
@@ -528,15 +563,17 @@
     padding-bottom: 10px;
     padding-right: 10px;
     margin-left: auto;
-    margin-bottom: 20px;
+    margin-bottom: 10px;
+    max-width: 700px;
   }
   .Gemini {
     width: fit-content;
+    max-width: 1500px;
     background-color: #2a2b2d;
     border-radius: 10px;
     padding-bottom: 10px;
     padding-right: 10px;
-    margin-bottom: 20px;
+    margin-bottom: 10px;
   }
   #hello-message {
     background: linear-gradient(
@@ -556,40 +593,71 @@
     height: 100%;
   }
   .senders {
-    font-size: 1.6em;
-  }
-  .content {
     font-size: 1.3em;
   }
+  .content {
+    font-size: 1.1em;
+  }
+  .model-selection {
+    padding-top: 5px;
+    padding-left: 10px;
+  }
+  .model-selection select {
+    border-radius: 10px;
+  }
   .chatlog {
-    height: 84vh;
+    max-height: calc(
+      100vh - 70px
+    ); /* Adjust this value based on the height of your text area */
     overflow-y: scroll;
-    margin-bottom: 5px;
+    padding-left: 10px;
+    padding-right: 10px;
+    margin-top: 5px;
+  }
+  .nav {
+    display: flex;
+    justify-content: space-between; /* Adjusts spacing between items */
+    align-items: center; /* Centers items vertically */
+    position: fixed;
+    background-color: var(--base-200);
+    backdrop-filter: blur(3px);
+    width: 100vw;
+  }
+  .nav .title {
+    position: relative;
+    flex: 1; /* Allows the title to take available space */
+    text-align: center; /* Centers the text within the title div */
+    font-weight: bold;
   }
   textarea {
-    min-height: 8vh;
-    max-height: 80px;
-    height: 20px;
-    width: 60vw;
+    min-height: 10px;
+    max-height: 60px;
+    height: 45px;
+    width: 1000px;
     border-radius: 5px;
-    border: 1px solid white;
-    background-color: #1e1f20;
+    border: 0.1em solid var(--border-color);
+    background-color: #1b1b1b;
     color: white;
-    padding-left: 15px;
-    padding-right: 15px;
+    padding-left: 5px;
+    padding-right: 5px;
     resize: none;
     overflow-y: scroll;
   }
   button {
     border-radius: 10px;
-    margin-left: 5px;
+    border: 0.1em solid var(--border-color);
   }
   .input-area {
     position: absolute;
     left: 0;
     right: 0;
+    bottom: 0;
     display: flex;
     justify-content: center;
     align-items: center;
+    gap: 10px;
+    background-color: #121213;
+    padding-top: 10px;
+    padding-bottom: 10px;
   }
 </style>
