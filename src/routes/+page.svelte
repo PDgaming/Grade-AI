@@ -6,8 +6,8 @@
   import { goto } from "$app/navigation";
   import { UsersDatabase } from "./supabaseClient";
   import GradeAI from "./grade-app-ai/GradeAI.svelte";
-
-  let loggedIn: boolean = false;
+  import { loggedIn } from "./userStore";
+  import GradeAi from "./grade-app-ai/GradeAI.svelte";
 
   onMount(async () => {
     const sessionCookie = document.cookie.split(";")[0];
@@ -19,7 +19,18 @@
         if (data) {
           sessionStorage.setItem("Email", data[0].Email);
           sessionStorage.setItem("Membership", data[0].Membership);
-          loggedIn = true;
+          loggedIn.set(true);
+          const response = await fetch("/api/login", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              email: data[0].Email,
+              type: "renewCookie",
+            }),
+          });
+          const result = await response.json();
         } else {
           console.log(error);
         }
@@ -42,10 +53,12 @@
 </script>
 
 <svelte:head>
-  <title>Grade App</title>
+  <title>Grade AI</title>
 </svelte:head>
 
-{#if !loggedIn}
+{#if $loggedIn}
+  <GradeAI />
+{:else}
   <div class="main">
     <Navbar />
     <div class="hero min-h-screen">
@@ -199,7 +212,6 @@
     <Footer />
   </div>
 {/if}
-{#if loggedIn}<GradeAI />{/if}
 
 <style>
   :root {

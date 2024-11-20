@@ -113,7 +113,11 @@
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ email: email, password: password }),
+        body: JSON.stringify({
+          email: email,
+          password: password,
+          type: "login",
+        }),
       });
       const result = await response.json();
       if (result.status == 200) {
