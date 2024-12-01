@@ -15,14 +15,12 @@
   } from "@google/generative-ai"; // imports GoogleGenerativeAI
   import { GradeAppDatabase } from "../supabaseClient";
   import HighlightedContent from "../components/highlightedContent.svelte";
-
   import { race } from "./utils";
 
   let name = "User"; //declares name variable with default value of "User"
   let membership = "free"; //declares member variable with default value of "false"
   let notLoggedIn = false; //declares notLoggedIn variable with default value of false
   let userEmail = ""; //declares userEmail variable with default value of ""
-
   let messages: any = []; // array to store user and ai messages
   let messagesForTTS = [];
   let userInput = ""; // variable to store user message
@@ -35,7 +33,6 @@
   let stopButton = false;
   let selectedModel: string;
   let user: string = "User";
-
   const socraticModelSystemPrompt = [
     {
       role: "user",
@@ -67,7 +64,9 @@
     },
   ];
   let systemPrompt = baseModelSystemPrompt;
-  let modelName: string = "gemini-1.5-flash";
+  let modelName: "gemini-1.5-pro" | "gemini-1.5-flash" = "gemini-1.5-flash";
+  const ToastContainer = ToastContainerAny as any;
+  const FlatToast = FlatToastAny as any;
 
   const showToast = (
     title: string,
@@ -94,8 +93,6 @@
       onRemove: () => {},
     });
   };
-  const ToastContainer = ToastContainerAny as any;
-  const FlatToast = FlatToastAny as any;
   onMount(async () => {
     //checks if user is logged in by is Display Name exists in sessionStorage
     if (sessionStorage.getItem("Display Name")) {
@@ -290,6 +287,7 @@
     topP: 0.95,
     topK: 64,
     maxOutputTokens: 8192,
+    responseMimeType: "text/plain",
   };
   const safetySettings = [
     {
