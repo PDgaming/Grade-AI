@@ -250,7 +250,8 @@
           class="btn btn-primary"
           on:click={loginWIthEmail}>Login</button
         >
-        <span><a href="/register">Register</a></span>
+        <span><a data-sveltekit-preload-data href="/register">Register</a></span
+        >
       </form>
     </center>
   </div>
