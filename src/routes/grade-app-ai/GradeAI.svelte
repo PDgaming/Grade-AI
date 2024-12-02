@@ -33,38 +33,25 @@
   let stopButton = false;
   let selectedModel: string;
   let user: string = "User";
-  const socraticModelSystemPrompt = [
-    {
-      role: "user",
-      parts: [
-        {
-          text: "You are a Socratic Teacher. And I am your student. And please try to keep your replies as brief as possible, while explaining each topic carefully. And Your Name is Grade-AI. Please Exlain the topic in relation to the NCERT CBSE 2024 curriculum. Please don't give the answer directly but rather a starting point to get started, you job is to help the student find the answer on his/her own way.",
-        },
-      ],
-    },
-    {
-      role: "model",
-      parts: [
-        {
-          text: "Welcome, student. I am Grade-AI, your Socratic guide. Tell me, what troubles your mind today? What are you eager to learn?  \n",
-        },
-      ],
-    },
-  ];
-  const baseModelSystemPrompt = [
-    {
-      role: "user",
-      parts: [{ text: "You are a Large Language model named Grade-AI" }],
-    },
-    {
-      role: "model",
-      parts: [
-        { text: "That's a cool name! I like it. How can I help you today? \n" },
-      ],
-    },
-  ];
+  const socraticModelSystemPrompt =
+    "You are a Socratic Teacher. And I am your student. And please try to keep your replies as brief as possible, while explaining each topic carefully. Please Exlain the topic in relation to the NCERT CBSE 2024 curriculum. Please don't give the answer directly but rather a starting point to get started, you job is to help the student find the answer on his/her own way.";
+  const baseModelSystemPrompt = "You are a Large Language model named Grade-AI";
   let systemPrompt = baseModelSystemPrompt;
-  let modelName: "gemini-1.5-pro" | "gemini-1.5-flash" = "gemini-1.5-flash";
+  let modelName: "gemini-1.5-pro" | "gemini-1.5-flash-8b" =
+    "gemini-1.5-flash-8b";
+  const socraticConfig = {
+    temperature: 0,
+    topP: 0.95,
+    topK: 40,
+    maxOutputTokens: 8192,
+  };
+  const BaseConfig = {
+    temperature: 1,
+    topP: 0.95,
+    topK: 40,
+    maxOutputTokens: 8192,
+  };
+  let generationConfig = BaseConfig;
   const ToastContainer = ToastContainerAny as any;
   const FlatToast = FlatToastAny as any;
 
@@ -286,12 +273,6 @@
     }
     userInputElement.value = ""; // removes old message from the input
   }
-  const generationConfig = {
-    temperature: 1,
-    topP: 0.95,
-    topK: 64,
-    maxOutputTokens: 8192,
-  };
   const safetySettings = [
     {
       category: HarmCategory.HARM_CATEGORY_HARASSMENT,
@@ -326,12 +307,13 @@
       try {
         const model = genAI.getGenerativeModel({
           model: modelName,
+          systemInstruction: systemPrompt,
         }); // generates a new model using genAI
         try {
           chatSession = model.startChat({
             generationConfig,
             safetySettings,
-            history: systemPrompt,
+            history: [],
           });
         } catch (error) {
           console.log(`Error setting up chatSession: ${error}`);
@@ -405,7 +387,7 @@
     //checks if member is true
     // if (membership == "tier-1" || membership == "tier-2") {
     systemPrompt = baseModelSystemPrompt;
-    modelName = "gemini-1.5-flash";
+    modelName = "gemini-1.5-flash-8b";
     // } else {
     //   showToast(
     //     "Error",
@@ -416,7 +398,6 @@
     // }
   }
   function changeModel() {
-    console.log(selectedModel);
     if (selectedModel == "Socratic Model") {
       gradeAiSocratic();
     } else if (selectedModel == "Base Model") {
