@@ -309,6 +309,7 @@
           model: modelName,
           systemInstruction: systemPrompt,
         }); // generates a new model using genAI
+        console.log(model);
         try {
           chatSession = model.startChat({
             generationConfig,
@@ -421,7 +422,7 @@
         <select
           bind:value={selectedModel}
           on:change={changeModel}
-          class="dropdown-content menu bg-base-500 z-[1] p-2 shadow"
+          class="dropdown-content menu bg-base-500 z-[1] p-2 shadow mb-2"
         >
           <option>Base Model</option>
           <option>Socratic Model</option>
@@ -433,7 +434,7 @@
     </div>
     <div class="chatlog" id="chatlog">
       {#if shouldShowWelcomeMessage}
-        <div class="welcome-message">
+        <div class="welcome-message mt-10">
           <h1 id="hello-message" class="text-7xl text-white">Hello There!</h1>
           <p class="text-2xl">How Can I Help You Today?</p>
         </div>
