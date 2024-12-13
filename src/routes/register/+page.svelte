@@ -49,7 +49,7 @@
         if (data) {
           sessionStorage.setItem("Email", data[0].Email);
           sessionStorage.setItem("Membership", data[0].Membership);
-          goto("/");
+          goto("/grade-ai");
         } else {
           console.log(error);
         }
@@ -98,7 +98,7 @@
         //shows a toast if user exists, if user does not exists then it will add the user and continue to dashboard
         showToast("Success", "Registration Successfull!!", 2500, "success");
         setTimeout(() => {
-          goto("/");
+          goto("/grade-ai");
         }, 2500); //waits for 2500ms(2.5s) before redirecting to dashboard
       } else {
         showToast("Error", "There was an error", 2500, "error");
